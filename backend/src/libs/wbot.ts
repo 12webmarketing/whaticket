@@ -1,4 +1,5 @@
 import qrCode from "qrcode-terminal";
+import fs from "fs-extra";
 import { Client } from "whatsapp-web.js";
 import { getIO } from "./socket";
 import Whatsapp from "../models/Whatsapp";
