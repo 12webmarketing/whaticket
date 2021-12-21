@@ -1,4 +1,5 @@
 import qrCode from "qrcode-terminal";
+import fs from "fs-extra";
 import { Client } from "whatsapp-web.js";
 import { getIO } from "./socket";
 import Whatsapp from "../models/Whatsapp";
@@ -37,17 +38,25 @@ export const initWbot = async (whatsapp: Whatsapp): Promise<Session> => {
     try {
       const io = getIO();
       const sessionName = whatsapp.name;
-      let sessionCfg;
-
+      const client_id = whatsapp.id;
+      //let sessionCfg;
+			const SESSION_FILE_PATH = './session-'+client_id+'.json';
+			let sessionCfg;
+			if (fs.existsSync(SESSION_FILE_PATH)) {
+				sessionCfg = require(SESSION_FILE_PATH);
+			}
+			/*
       if (whatsapp && whatsapp.session) {
         sessionCfg = JSON.parse(whatsapp.session);
       }
-
+			*/
       const wbot: Session = new Client({
         session: sessionCfg,
         puppeteer: {
+					args: ['--no-sandbox', '--disable-setuid-sandbox'],
           executablePath: process.env.CHROME_BIN || undefined
-        }
+        }, 
+				clientId: 'bd_'+whatsapp.id
       });
 
       wbot.initialize();
